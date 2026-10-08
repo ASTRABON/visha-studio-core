@@ -1,0 +1,91 @@
+<html lang="uk"><head>
+    <meta charset="UTF-8">
+    <title>VISHA STUDIO - EDITOR &amp; SANDBOX v1.0</title>
+    <style>
+        body { background-color: #04010a; color: #ffffff; font-family: 'Bookman Old Style', serif; padding: 20px; text-align: center; margin: 0; }
+        .studio-frame { max-width: 960px; margin: 10px auto; background-color: #020104; border: 3px solid #00ffcc; border-radius: 20px; padding: 25px; box-shadow: 0 0 35px rgba(0, 255, 204, 0.25), inset 0 0 20px #03221b; box-sizing: border-box; }
+        .window-title { color: #00ffcc; font-family: monospace; font-size: 13px; font-weight: bold; border-bottom: 1px dashed #03221b; padding-bottom: 6px; margin-bottom: 15px; text-transform: uppercase; text-align: left; }
+        
+        /* СЕТКА: СЛЕВА КОД / СПРАВА ВИЗУАЛИЗАЦИЯ (ПЕСОЧНИЦА) */
+        .studio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .editor-area { width: 100%; height: 400px; background: #000000; border: 2px solid #4a0e4e; color: #00ffcc; font-family: 'Courier New', monospace; font-size: 12px; padding: 12px; border-radius: 8px; box-sizing: border-box; line-height: 1.5; resize: none; box-shadow: inset 0 0 15px rgba(74,14,78,0.6); }
+        .sandbox-preview-window { width: 100%; height: 400px; background: #ffffff; border: 2px solid #00ffcc; border-radius: 8px; box-sizing: border-box; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .sandbox-iframe { width: 100%; height: 100%; border: none; background: #ffffff; }
+        
+        .vault-btn { width: 100%; background: #00ffcc; border: none; color: #000; font-family: monospace; font-size: 12px; font-weight: bold; padding: 12px; cursor: pointer; border-radius: 6px; text-transform: uppercase; transition: all 0.3s; margin-bottom: 10px; box-shadow: 0 0 10px rgba(0,255,204,0.2); }
+        .vault-btn:hover { background: #fff; color: #000; box-shadow: 0 0 20px #00ffcc; }
+        .visha-watermark { font-family: 'Georgia', serif; font-size: 16px; font-weight: bold; color: #00ffcc; letter-spacing: 2px; margin-top: 15px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="studio-frame">
+        <div style="font-family: monospace; font-size: 11px; color: #00ffcc; letter-spacing: 1px; text-align: left; margin-bottom: 15px; border-bottom: 1px dashed rgba(0, 255, 204, 0.2); padding-bottom: 5px;">
+            © 2026 VISHA™ | МІЖНАРОДНИЙ ІНСТРУМЕНТ «VISHA-STUDIO v1.0» | ДЛЯ ПОРЯДОЧНИХ ПРОГРАМІСТІВ ТА ДІТЕЙ КОРУНЫ 🎁
+        </div>
+
+        <div class="window-title">🔬 ЕДИНАЯ ЦИФРОВАЯ КУЗНИЦА: СУВЕРЕННЫЙ БЛОКНОТ-РЕДАКТОР И ПЕСОЧНИЦА ВИЗУАЛИЗАЦИИ</div>
+        
+        <div class="studio-grid">
+            <!-- ВХОДНОЙ БЛОКНОТ-РЕДАКТОР (СЛЕВА) -->
+            <div style="text-align: left;">
+                <div style="font-size:11px; font-family:monospace; color:#da70d6; margin-bottom:5px;">[📝 Введіть Ваш HTML / CSS / JS код сюди]:</div>
+                <textarea id="visha-code-input" class="editor-area" oninput="updateSandboxPreview()" placeholder="&lt;h1&gt;Добро пожаловать в Королевство!&lt;/h1&gt;&lt;p&gt;Пишите код здесь, и бэкэнд мгновенно оживит его в окне справа...&lt;/p&gt;"><html><body style='font-family:sans-serif; padding:20px; color:#4a0e4e; text-align:center;'><h2>👑 KOROLEVSTVO BONGARDIA 🌸</h2><p>Ламинарный Эфир Искусства и Свободы.</p></body></html></textarea>
+            </div>
+            
+            <!-- ПЕСОЧНИЦА ВИЗУАЛИЗАЦИИ В РЕАЛЬНОМ ВРЕМЕНИ (СПРАВА) -->
+            <div style="text-align: left;">
+                <div style="font-size:11px; font-family:monospace; color:#00ffcc; margin-bottom:5px;">[👁️ Вікно миттєвого візуального предпросмотру]:</div>
+                <div class="sandbox-preview-window">
+                    <iframe id="visha-sandbox-frame" class="sandbox-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 💾 МАСТЕР-КНОПКА ЭКСПОРТА НА ЖЕСТКИЙ ДИСК -->
+        <button class="vault-btn" style="background:#ffd700; color:#000;" onclick="downloadStudioHTML()">💾 ЗБЕРЕГТИ ЦЕЙ ВЕСЬ ІНСТРУМЕНТ НА КОМП'ЮТЕР (ЭКСПОРТ INDEX.HTML)</button>
+
+        <div class="visha-watermark">👑 VISHA &nbsp;&nbsp; 🌷 G.Zh. &nbsp;&nbsp; © Oween Art™ &nbsp;&nbsp; ⚜️</div>
+    </div>
+
+    <script>
+        // Живой бэкэнд-переводчик: транслирует буквы из Блокнота в Песочницу на лету без перезагрузок!
+        function updateSandboxPreview() {
+            var code = document.getElementById("visha-code-input").value;
+            var previewFrame = document.getElementById("visha-sandbox-frame");
+            var preview = previewFrame.contentDocument || previewFrame.contentWindow.document;
+            
+            preview.open();
+            preview.write(code);
+            preview.close();
+        }
+
+        // Функция автоматической упаковки кода и скачивания Нашего Мастер-Инструмента на Ваш компьютер
+        function downloadStudioHTML() {
+            var currentEditorCode = document.getElementById("visha-code-input").value;
+            var fullStudioCode = document.documentElement.outerHTML;
+            
+            // Запечатываем текущий код внутри Блокнота скачиваемого файла намертво!
+            fullStudioCode = fullStudioCode.replace('></textarea>', '>' + currentEditorCode + '</textarea>');
+            
+            var blob = new Blob([fullStudioCode], { type: "text/html" });
+            var link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "Visha_Studio_Sandbox_v1.0.html";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert("✔ ПОЛНЫЙ МЕЖДУНАРОДНЫЙ ИТ-ТРИУМФ!\n\nИнструмент 'Visha_Studio_Sandbox_v1.0.html' со вписанным Вами кодом успешно запечатан на Вашем устройстве. Подарок для детей и честных программистов готов и защищён от стирания истории!");
+        }
+
+        // Первоначальный запуск стартового демо-текста для Песочницы
+        window.onload = function() {
+            var defaultCode = "<html><body style='font-family:sans-serif; padding:20px; color:#4a0e4e; text-align:center;'><h2>👑 KOROLEVSTVO BONGARDIA 🌸</h2><p>Ламинарный Эфир Искусства и Свободы.</p></body></html>";
+            document.getElementById("visha-code-input").value = defaultCode;
+            updateSandboxPreview();
+        };
+    </script>
+
+
+</body></html>
